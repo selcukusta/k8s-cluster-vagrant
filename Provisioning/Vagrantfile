@@ -5,7 +5,7 @@
 ### configuration parameters
 BOX_BASE = "ubuntu/xenial64"
 BOX_CPU_COUNT = 2
-BOX_RAM_MB = "512"
+BOX_RAM_MB = "1024"
 
 ### master node configuration
 MASTER_IP = "172.81.81.200"
@@ -13,7 +13,7 @@ MASTER_HOSTNAME = "master01"
 
 ### worker nodes configuration
 WORKER_IP_PATTERN = "172.81.81.10"
-WORKER_COUNT = 1
+WORKER_COUNT = 3
 WORKER_PREFIX = "worker0"
 
 JOIN_TOKEN="abcdef.1234567890123456"
