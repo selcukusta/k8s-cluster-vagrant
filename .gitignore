@@ -1,0 +1,26 @@
+
+# Created by https://www.gitignore.io/api/vagrant,visualstudiocode
+
+### Vagrant ###
+# General
+.vagrant/
+
+# Log files (if you are creating logs in debug mode, uncomment this)
+# *.logs
+
+### Vagrant Patch ###
+*.box
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+### Custom ###
+Use-Minikube.md
+Use-Vagrant.md
+Vagrantfile.old
+
+# End of https://www.gitignore.io/api/vagrant,visualstudiocode
