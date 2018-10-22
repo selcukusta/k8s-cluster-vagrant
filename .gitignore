@@ -6,7 +6,11 @@
 .vagrant/
 
 # Log files (if you are creating logs in debug mode, uncomment this)
-# *.logs
+*.log
+*.logs
+
+# shared file(s)
+config
 
 ### Vagrant Patch ###
 *.box
@@ -21,6 +25,6 @@
 ### Custom ###
 Use-Minikube.md
 Use-Vagrant.md
-Vagrantfile.old
+*.old
 
 # End of https://www.gitignore.io/api/vagrant,visualstudiocode
