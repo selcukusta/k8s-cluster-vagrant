@@ -41,3 +41,12 @@ Expected result, two different hostname should be written! For instance;
 ```
 
 On the other terminal panel, write `vagrant ssh worker02` and connect to worker machine. After that get the running containers with `sudo docker container ls` command and catch the Flask app container id kill it. Service will continue to respond.
+
+## Resources
+[Kubernetes Offical Documentation](https://kubernetes.io/docs/home/)
+
+[Nginx Ingress Controller](https://kubernetes.github.io/ingress-nginx/)
+
+[MetalLB](http://metallb.universe.tf/)
+
+and thanks to all [stackoverflow](http://stackoverflow.com) heroes!
