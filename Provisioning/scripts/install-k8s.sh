@@ -1,10 +1,11 @@
 #!/bin/sh
+echo "node IP: $1"
 
-# swapoff
+echo "swapoff"
 sudo swapoff -a
 
-# open master port(s)
-sudo ufw allow 6443,2379,2380,10250,10251,10252/tcp
+echo "update fstab so that swap remains disabled after a reboot"
+sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 
 # Docker version for ubuntu/xenial64
 export DOCKER_VERSION=18.06.1~ce~3-0~ubuntu
@@ -39,3 +40,11 @@ sudo apt-get update && sudo apt-get install -yq \
   kubectl
 
 sudo apt-mark hold kubelet kubeadm kubectl
+
+echo "add --fail-swap-on=false"
+sudo sed -i '9s/^/Environment="KUBELET_EXTRA_ARGS=--fail-swap-on=false --node-ip='"$1"'"\n/' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
+
+echo "reload daemon after kubelet definition is changed"
+sudo systemctl daemon-reload
+echo "restart kubelet service"
+sudo systemctl restart kubelet.service

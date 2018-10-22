@@ -1,24 +1,23 @@
- 
+
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
-
+Vagrant.require_version ">= 2.0.0"
 ### configuration parameters
 BOX_BASE = "ubuntu/xenial64"
-BOX_CPU_COUNT = 2
+BOX_CPU_COUNT = 1
 BOX_RAM_MB = "1024"
 
-### master node configuration
+### master node configuration(s)
 MASTER_IP = "172.81.81.200"
 MASTER_HOSTNAME = "master01"
 
-### worker nodes configuration
+### worker nodes configuration(s)
 WORKER_IP_PATTERN = "172.81.81.10"
-WORKER_COUNT = 3
+WORKER_COUNT = 2
 WORKER_PREFIX = "worker0"
 
+### kubernetes configuration(s)
 JOIN_TOKEN="abcdef.1234567890123456"
-
-Vagrant.require_version ">= 2.0.0"
 
 Vagrant.configure("2") do |config|
 
@@ -31,12 +30,17 @@ Vagrant.configure("2") do |config|
     node.vm.box = BOX_BASE
     node.vm.box_check_update = false
     node.vm.hostname = "#{MASTER_HOSTNAME}"
-    node.vm.network "private_network", ip: MASTER_IP, netmask: "255.255.255.0"
+    node.vm.network "private_network", ip: MASTER_IP
+    # warning: If you get "Hash sum mismatch" error while provisioning, please uncomment it!
+    node.vm.provision "shell", inline: "sudo rm -rf /var/lib/apt/lists/* && sudo apt-get update -o Acquire::CompressionTypes::Order::=gz"
     node.vm.provision "shell", inline: "echo 'cd /vagrant' >> ~/.bashrc && exit", privileged: false
-    node.vm.provision "shell", path: "scripts/install-k8s.sh"
     node.vm.provision "shell" do |s|
-        s.path = "scripts/setup-master-weave-net.sh"
-        s.args = [MASTER_IP, JOIN_TOKEN, "k8s-admin.conf"]
+      s.path = "scripts/install-k8s.sh"
+      s.args = [MASTER_IP]
+    end
+    node.vm.provision "shell" do |s|
+        s.path = "scripts/setup-master-flannel.sh"
+        s.args = [MASTER_IP, JOIN_TOKEN, "config"]
     end
   end
 
@@ -45,9 +49,14 @@ Vagrant.configure("2") do |config|
       node.vm.box = BOX_BASE
       node.vm.box_check_update = false
       node.vm.hostname = "#{WORKER_PREFIX}#{i}"
+      # warning: If you get "Hash sum mismatch" error while provisioning, please uncomment it!
+      node.vm.provision "shell", inline: "sudo rm -rf /var/lib/apt/lists/* && sudo apt-get update -o Acquire::CompressionTypes::Order::=gz"
       node.vm.network "private_network", ip: "#{WORKER_IP_PATTERN}#{i}", netmask: "255.255.255.0"
       node.vm.provision "shell", inline: "echo 'cd /vagrant' >> ~/.bashrc && exit", privileged: false
-      node.vm.provision "shell", path: "scripts/install-k8s.sh"
+      node.vm.provision "shell" do |s|
+        s.path = "scripts/install-k8s.sh"
+        s.args = ["#{WORKER_IP_PATTERN}#{i}"]
+      end
       node.vm.provision "shell" do |s|
         s.path = "scripts/setup-worker.sh"
         s.args = [MASTER_IP, JOIN_TOKEN]
