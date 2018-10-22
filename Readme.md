@@ -7,7 +7,7 @@ cd Provisioning
 vagrant up
 ```
 
-After all machines are up reload them: `vagrant reload``
+After all machines are up reload them: `vagrant reload`
 
 ## Playground
 1) Run `kubectl apply -f apps/1-configmap.yml` command to disable ssl-redirect forcement on Nginx Ingress Controller.
